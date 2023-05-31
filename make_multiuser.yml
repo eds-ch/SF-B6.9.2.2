@@ -1,0 +1,25 @@
+---
+- hosts: test_srv
+  gather_facts: no
+  become: true
+  become_user: root
+  tasks:
+  - name: Ensure group "superusers" exists
+    ansible.builtin.group:
+      name: superusers
+      state: present
+  - name: Create User1
+    ansible.builtin.user:
+      name: user1
+      group: superusers
+      createhome: yes
+  - name: Create User2
+    ansible.builtin.user:
+      name: user2
+      group: superusers
+      createhome: yes
+  - name: Add a line to SUDO config for users
+    ansible.builtin.lineinfile:
+      path: /etc/sudoers
+      line: "%superusers ALL=(ALL) ALL"
+      create: yes
